@@ -88,7 +88,7 @@ public function login(Request $request)
             $request->session()->regenerate();
 
             // Redirect to dashboard (or any protected page)
-            return redirect()->intended('/');
+            return redirect()->intended('/')->with('success','User Logined successfully!');
         }
 
         // If login fails

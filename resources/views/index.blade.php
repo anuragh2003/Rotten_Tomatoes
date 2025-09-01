@@ -5,11 +5,19 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
+@if(session('success'))
+    <div class="bg-green-500 text-white p-3 rounded mb-4">
+        {{ session('success') }}
+    </div>
+@endif
+
 <header class="bg-red-600 text-white shadow-md sticky top-0 z-50">
     <div class="container mx-auto flex justify-between items-center px-6 py-4">
         <!-- Logo -->
         <a href="/" class="flex items-center space-x-2">
-            <img src="https://res.cloudinary.com/dkze0rfr0/image/upload/v1756378182/Gemini_Generated_Image_jepyxljepyxljepy_cjbgai.png" alt="Site Logo" class="h-10 w-10">
+            <img src="https://res.cloudinary.com/dkze0rfr0/image/upload/v1756378182/Gemini_Generated_Image_jepyxljepyxljepy_cjbgai.png" 
+                 alt="Site Logo" class="h-10 w-10">
             <span class="text-2xl font-bold tracking-wide">FreshFlix</span>
         </a>
 
@@ -27,7 +35,7 @@
             <!-- Search -->
             <div class="relative">
                 <input type="text" placeholder="Search..." 
-                    class="bg-white text-black rounded-full px-4 py-2 pl-10 w-48 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition">
+                       class="bg-white text-black rounded-full px-4 py-2 pl-10 w-48 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition">
                 <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
                      viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -36,9 +44,24 @@
             </div>
 
             <!-- User Auth Links -->
-            <a href="/signin" class="hidden md:inline-block bg-yellow-400 text-black px-4 py-2 rounded-lg font-semibold hover:bg-yellow-500 transition">
-                Sign In
-            </a>
+            @guest
+                <a href="/signin" 
+                   class="hidden md:inline-block bg-yellow-400 text-black px-4 py-2 rounded-lg font-semibold hover:bg-yellow-500 transition">
+                    Sign In
+                </a>
+            @endguest
+
+            @auth
+                <div class="relative group">
+                    <button class="flex items-center space-x-2 bg-yellow-400 text-black px-4 py-2 rounded-lg font-semibold hover:bg-yellow-500 transition">
+                        <span>{{ Auth::user()->name }}</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <!-- Dropdown -->
+                </div>
+            @endauth
         </div>
 
         <!-- Mobile Menu Button -->
@@ -50,10 +73,10 @@
         </button>
     </div>
 </header>
+
 <body>
-
-
 </body>
+
 <footer class="bg-black text-gray-300 mt-12">
     <div class="container mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-4 gap-8">
         
