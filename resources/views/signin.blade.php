@@ -36,11 +36,7 @@
           class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none" value="{{ old('title') }}">
       </div>
 
-      <div>
-        <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm Password</label>
-        <input type="password" name="password_confirmation" id="password_confirmation" required 
-          class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none" value="{{ old('title') }}">
-      </div>
+      
 
       <button type="submit" 
         class="w-full bg-red-600 text-white py-2 rounded-lg font-semibold hover:bg-red-700 transition">
