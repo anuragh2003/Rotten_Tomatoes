@@ -70,7 +70,12 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        try {
+        $user->delete();
+        return redirect()->route('users.index')->with('success', 'User deleted successfully!');
+    } catch (\Exception $e) {
+        return redirect()->route('users.index')->with('error', 'Failed to delete user. Please try again.');
+    }
     }
 public function login(Request $request)
     {
@@ -94,5 +99,19 @@ public function login(Request $request)
         return back()->withErrors([
             'email' => 'Invalid email or password',
         ])->onlyInput('email');
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout(); // logs out the user
+
+    // Invalidate the session
+        $request->session()->invalidate();
+
+    // Regenerate CSRF token
+        $request->session()->regenerateToken();
+
+    // Redirect to home (or login) with success message
+        return redirect('/')->with('success', 'User logged out successfully!');
     }
 }

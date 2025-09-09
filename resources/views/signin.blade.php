@@ -16,7 +16,7 @@
     </div>
 
     <!-- Sign Up Form -->
-    <form action="{{ route('users.store') }}" method="POST" class="space-y-5">
+    <form action="/api/auth/register" method="POST" class="space-y-5">
       @csrf
       <div>
         <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>

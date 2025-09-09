@@ -16,7 +16,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name'       => 'required|string|max:255',
             'email'      => 'required|string|email|max:255|unique:users',
-            'password'   => 'required|string|min:6|confirmed',
+            'password'   => 'required|string|min:6',
         ]);
 
         if ($validator->fails()) {
@@ -29,7 +29,7 @@ class AuthController extends Controller
             'password' => bcrypt($request->password),
         ]);
 
-        return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
+        return redirect()->route('login')->with('success','User Created successfully!');
     }
 
     // Login user and return JWT token
@@ -41,7 +41,11 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        return redirect()->route('index')->with('success','User Login successfull!');
+        return response()->json([
+        'access_token' => $token,
+        'token_type'   => 'bearer',
+        'expires_in'   => config('jwt.ttl') * 60,
+    ]);
     }
 
     // Get user profile
