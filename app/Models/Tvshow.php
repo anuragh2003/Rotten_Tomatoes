@@ -19,5 +19,20 @@ class Tvshow extends Model
         'year',
         'genres',
         'poster',
+        'trailer_url'
     ];
+
+    public function reviews()
+    {
+        return $this->morphMany(user_review::class, 'reviewable');
+    }
+
+    public function averageRating()
+    {
+    return $this->reviews()
+        ->where('approved', true) // only approved reviews count
+        ->avg('rating');
+    }
+
+
 }

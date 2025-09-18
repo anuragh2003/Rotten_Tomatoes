@@ -28,6 +28,7 @@ class TvshowController extends Controller
             'year'    => 'nullable|integer',
             'genres'  => 'nullable|string',
             'poster'  => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'trailer_url' => 'nullable|string|max:255',
         ]);
 
         if ($request->hasFile('poster')) {
@@ -39,6 +40,15 @@ class TvshowController extends Controller
 
         return redirect()->route('index')->with('success','Movie Created successfully!');
     }
+     
+    public function show(TvShow $tvshow)
+    {
+    // Fetch only approved reviews for this tv show
+    $reviews = $tvshow->reviews()->where('approved', true)->get();
+
+    return view('tvshows.show', compact('tvshow', 'reviews'));
+    }
+
 
 }
 

@@ -12,7 +12,7 @@
     <!-- Logo -->
     <div class="text-center mb-6">
       <h1 class="text-3xl font-bold text-red-600">FreshFlix</h1>
-      <p class="text-gray-500">Sign in to your account</p>
+      <p class="text-gray-500">log in to your account</p>
     </div>
 
     <!-- Login Form -->
@@ -41,14 +41,14 @@
 
       <button type="submit" 
         class="w-full bg-red-600 text-white py-2 rounded-lg font-semibold hover:bg-red-700 transition">
-        Sign In
+        log In
       </button>
     </form>
 
     <!-- Sign Up Redirect -->
     <p class="mt-6 text-center text-sm text-gray-600">
       Don’t have an account? 
-      <a href="/signin" class="text-red-600 font-semibold hover:underline">Sign Up</a>
+      <a href="/signin" class="text-red-600 font-semibold hover:underline">Sign In</a>
     </p>
   </div>
 

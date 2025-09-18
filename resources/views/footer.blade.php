@@ -14,9 +14,8 @@
             <h3 class="text-white font-semibold mb-3">Explore</h3>
             <ul class="space-y-2 text-sm">
                 <li><a href="/movies" class="hover:text-white">Movies</a></li>
-                <li><a href="/tv-shows" class="hover:text-white">TV Shows</a></li>
-                <li><a href="/top-lists" class="hover:text-white">Top Lists</a></li>
-                <li><a href="/awards" class="hover:text-white">Awards</a></li>
+                <li><a href="/tvshows" class="hover:text-white">TV Shows</a></li>
+                <li><a href="/top-rated" class="hover:text-white">Top Rated </a></li>
             </ul>
         </div>
 

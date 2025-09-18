@@ -49,6 +49,11 @@
           <label class="block font-medium">Poster</label>
           <input type="file" name="poster" class="w-full">
         </div>
+        <div>
+      <label class="block font-medium">Trailer URL</label>
+      <input type="text" name="trailer_url" placeholder="https://youtube.com/embed/xyz" 
+         class="w-full border rounded-lg px-3 py-2">
+        </div>
         <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition">Add Movie</button>
       </form>
     </div>
@@ -78,9 +83,52 @@
           <label class="block font-medium">Poster</label>
           <input type="file" name="poster" class="w-full">
         </div>
+        <div>
+  <label class="block font-medium">Trailer URL</label>
+  <input type="text" name="trailer_url" class="w-full border rounded-lg px-3 py-2" placeholder="YouTube embed URL">
+</div>
         <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">Add TV Show</button>
       </form>
     </div>
+
+    <!-- Pending Reviews Section -->
+<div id="reviewsSection" class="mt-12 bg-white shadow-lg rounded-xl p-8">
+  <h3 class="text-2xl font-bold mb-6">Pending Reviews</h3>
+
+  @if($pendingReviews->isEmpty())
+      <p class="text-gray-600">No pending reviews at the moment.</p>
+  @else
+      <div class="space-y-6">
+        @foreach($pendingReviews as $review)
+          <div class="border-b pb-4">
+            <p class="text-gray-800"><strong>User:</strong> {{ $review->user->name }}</p>
+            <p class="text-gray-800"><strong>Movie/Show:</strong> {{ $review->reviewable->title ?? 'N/A' }}</p>
+            <p class="text-gray-600"><strong>Rating:</strong> ⭐ {{ $review->rating }}/5</p>
+            <p class="text-gray-600"><strong>Review:</strong> {{ $review->body }}</p>
+
+            <div class="mt-3 flex gap-3">
+              <!-- Approve -->
+              <form action="{{ route('reviews.approve', $review->id) }}" method="POST">
+                @csrf
+                <button type="submit" class="bg-green-600 text-white px-4 py-1 rounded-lg hover:bg-green-700 transition">
+                  Approve
+                </button>
+              </form>
+
+              <!-- Reject -->
+              <form action="{{ route('reviews.reject', $review->id) }}" method="POST">
+                @csrf
+                <button type="submit" class="bg-red-600 text-white px-4 py-1 rounded-lg hover:bg-red-700 transition">
+                  Reject
+                </button>
+              </form>
+            </div>
+          </div>
+        @endforeach
+      </div>
+  @endif
+</div>
+
 
   </main>
 

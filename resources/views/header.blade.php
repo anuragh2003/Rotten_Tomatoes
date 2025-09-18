@@ -4,13 +4,28 @@
   <title>FreshFlix</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
 </head>
 
 @if(session('success'))
-    <div class="bg-green-500 text-white p-3 rounded mb-4">
+    <div id="flash-message" class="bg-green-500 text-white p-3 rounded mb-4 transition-opacity duration-1000">
         {{ session('success') }}
     </div>
+
+    <script>
+        // Hide flash message after 3 seconds
+        setTimeout(() => {
+            const msg = document.getElementById('flash-message');
+            if (msg) {
+                msg.style.opacity = '0';
+                setTimeout(() => msg.remove(), 1000); // remove after fade-out
+            }
+        }, 1000);
+    </script>
 @endif
+
 
 <header class="bg-red-600 text-white shadow-md sticky top-0 z-50">
     <div class="container mx-auto flex justify-between items-center px-6 py-4">
@@ -26,8 +41,7 @@
             <a href="/" class="hover:text-gray-200 transition">Home</a>
             <a href="/movies" class="hover:text-gray-200 transition">Movies</a>
             <a href="/tvshows" class="hover:text-gray-200 transition">TV Shows</a>
-            <a href="/top-lists" class="hover:text-gray-200 transition">Top Lists</a>
-            <a href="/awards" class="hover:text-gray-200 transition">Awards</a>
+            <a href="/top-rated" class="hover:text-gray-200 transition">Top Rated</a>
             @auth
         @if(Auth::user()->email === 'Anuragh@gmail.com')
         <!-- Admin Navbar -->
@@ -62,23 +76,28 @@
             @endguest
 
             @auth
-                <div class="relative group">
-                    <button class="flex items-center space-x-2 bg-yellow-400 text-black px-4 py-2 rounded-lg font-semibold hover:bg-yellow-500 transition">
-                        <span>{{ Auth::user()->name }}</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                    <!-- Dropdown -->
-                     <div class="absolute right-0 mt-2 w-40 bg-white text-black rounded-lg shadow-md opacity-0 group-hover:opacity-100 transition pointer-events-none group-hover:pointer-events-auto">
-                        <a href="/profile" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100">Logout</button>
-                        </form>
-                    </div>
-                </div>
-            @endauth
+<div class="relative group">
+    <!-- Dropdown Trigger -->
+    <button class="flex items-center space-x-2 bg-yellow-400 text-black px-4 py-2 rounded-lg font-semibold hover:bg-yellow-500 transition focus:outline-none">
+        <span>{{ Auth::user()->name }}</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+    </button>
+
+    <!-- Dropdown Menu -->
+    <div class="absolute right-0 mt-2 w-40 bg-white text-black rounded-lg shadow-md 
+                opacity-0 scale-95 transform transition-all duration-200 
+                group-hover:opacity-100 group-hover:scale-100 
+                group-focus-within:opacity-100 group-focus-within:scale-100">
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100">Logout</button>
+        </form>
+    </div>
+</div>
+@endauth
+
         </div>
 
         <!-- Mobile Menu Button -->
