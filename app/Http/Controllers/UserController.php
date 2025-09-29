@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+use App\Mail\Welcomemail; // We'll create this later
+
 
 class UserController extends Controller
 {
@@ -15,7 +19,7 @@ class UserController extends Controller
     {
         $users = User::all();
         // You can return the users or pass them to a view
-        return view('index',compact('index'));
+        return view('index',compact('users'));
     }
 
     /**
@@ -30,16 +34,26 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $validated=$request->validate([
-            'name'=>'required|string|max:255',
-            'email'=>'required|string|email|max:255|unique:users',
-            'password'=>'required|string|min:6',
-        ]);
-        $validated['password'] = bcrypt($validated['password']);
-        User::create($validated);
-        return redirect()->route('login')->with('success','User Created successfully!');
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users',
+        'password' => 'required|string|min:6|confirmed', // confirm password
+    ]);
+
+    $validated['password'] = bcrypt($validated['password']);
+
+    $user = User::create($validated);
+
+    try {
+        Mail::to($user->email)->send(new Welcomemail($user));
+    } catch (\Exception $e) {
+        Log::error("Mail error: ".$e->getMessage());
     }
+
+    return redirect()->route('login')->with('success', 'User created successfully!');
+}
+
 
     /**
      * Display the specified resource.

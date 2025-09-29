@@ -1,81 +1,83 @@
 @include('header')
 
 <div class="container mx-auto px-6 py-8">
-    <!-- Movie Trailer -->
-    <div class="aspect-w-16 aspect-h-9 mb-6">
-        <iframe 
-            src="{{ $movie->trailer_url }}" 
-            title="{{ $movie->title }} Trailer" 
-            class="w-full h-[500px] rounded-lg shadow-lg"
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen>
-        </iframe>
+  <!-- Trailer + Info -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2">
+      <div class="rounded-xl overflow-hidden shadow-lg mb-6">
+        <iframe src="{{ $movie->trailer_url }}" class="w-full h-[520px] md:h-[600px]" frameborder="0" allowfullscreen></iframe>
+      </div>
+
+      <div class="bg-gray-800 p-6 rounded-lg text-gray-100">
+        <h1 class="text-3xl font-bold mb-2">{{ $movie->title }}</h1>
+        <div class="flex gap-4 text-sm text-gray-300 mb-4">
+          @php $avg = $movie->reviews()->where('approved', true)->avg('rating'); @endphp
+@if(!$avg)
+  <span class="text-gray-400">No reviews</span>
+@elseif($avg < 3)
+  <span class="text-red-500 font-semibold">Rotten 💀</span>
+@else
+  <span class="text-green-400 font-semibold">Fresh 🍅</span>
+@endif
+
+          <span>⏱ {{ $movie->duration }}</span>
+          <span>{{ $movie->age_rating }}</span>
+        </div>
+        
+      </div>
     </div>
 
-    <!-- Movie Info -->
-    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ $movie->title }}</h1>
-        <p class="text-gray-700"><strong>Age Rating:</strong> {{ $movie->age_rating }}</p>
-        <p class="text-gray-700"><strong>Duration:</strong> {{ $movie->duration }}</p>
-        <p class="text-gray-700"><strong>Genres:</strong> {{ $movie->genres }}</p>
-    </div>
+    <!-- Reviews column -->
+    <div>
+      <div class="bg-gray-800 p-5 rounded-xl shadow">
+        <h3 class="text-xl font-semibold mb-3">Audience Reviews</h3>
 
-    <!-- Reviews Section -->
-    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Audience Reviews</h2>
-
-    <!-- Review Form -->
-    @auth
-        <form action="{{ route('reviews.store', $movie->id) }}" method="POST" class="bg-white p-6 rounded-xl shadow-md mb-8">
-            @csrf
-
-            <!-- Star Rating -->
-            <label class="block text-gray-700 font-medium mb-2">Your Rating</label>
-            <div class="flex items-center space-x-1 mb-4">
-                @for ($i = 1; $i <= 5; $i++)
-                    <input type="radio" id="star{{ $i }}" name="rating" value="{{ $i }}" class="hidden peer/star{{ $i }}">
-                    <label for="star{{ $i }}" class="cursor-pointer text-3xl text-gray-400 peer-checked/star{{ $i }}:text-yellow-400 hover:text-yellow-300">
-                        ★
-                    </label>
-                @endfor
-            </div>
-
-            <!-- Fresh/Rotten -->
-            <label class="block text-gray-700 font-medium mb-2">Fresh or Rotten?</label>
-            <select name="status" class="w-full border rounded-md p-2 mb-4">
-                <option value="Fresh">Fresh 🍅</option>
-                <option value="Rotten">Rotten 🤢</option>
-            </select>
-
-            <!-- Review Body -->
-            <label class="block text-gray-700 font-medium mb-2">Review Text</label>
-            <textarea name="body" rows="3" class="w-full border rounded-md p-2 mb-4"></textarea>
-
-            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
-                Submit Review
-            </button>
+        @auth
+        <form action="{{ route('reviews.store', $movie->id) }}" method="POST" class="space-y-3">
+          @csrf
+          <div class="flex items-center gap-2">
+            @for($i=1;$i<=5;$i++)
+              <input type="radio" id="star{{$i}}" name="rating" value="{{$i}}" class="hidden peer/star{{$i}}"/>
+              <label for="star{{$i}}" class="cursor-pointer text-2xl text-gray-400 peer-checked/star{{$i}}:text-yellow-400">★</label>
+            @endfor
+          </div>
+          <select name="status" class="w-full p-2 rounded bg-gray-700 text-gray-200">
+            <option value="Fresh">Fresh 🍅</option>
+            <option value="Rotten">Rotten 💀</option>
+          </select>
+          <textarea name="body" rows="4" class="w-full p-2 rounded bg-gray-800 text-gray-200" placeholder="Write your review..."></textarea>
+          <button class="w-full bg-red-600 py-2 rounded text-white">Submit Review</button>
         </form>
-    @else
-        <p class="text-red-500 mb-6">⚠️ You must <a href="{{ route('login') }}" class="underline">log in</a> to leave a review.</p>
-    @endauth
+        @else
+          <p class="text-yellow-300">Please <a href="{{ route('login') }}" class="underline">login</a> to leave a review.</p>
+        @endauth
 
-    <!-- Reviews List -->
-    <div class="space-y-6">
-        @forelse($movie->reviews()->where('approved', true)->get() as $review)
-            <div class="bg-gray-50 p-4 rounded-lg shadow">
-                <strong class="text-lg text-gray-800">{{ $review->user->name }}</strong>
-                <div class="flex items-center space-x-2 text-yellow-400">
-                    @for ($i = 1; $i <= 5; $i++)
-                        <span class="{{ $i <= $review->rating ? 'text-yellow-400' : 'text-gray-300' }}">★</span>
-                    @endfor
-                    <span class="ml-2 text-sm text-gray-600">{{ $review->status }}</span>
+        <hr class="my-4 border-gray-700"/>
+
+        <div class="space-y-4 max-h-[520px] overflow-auto pr-2">
+          @forelse($movie->reviews()->where('approved', true)->with('user')->latest()->get() as $review)
+            <div class="bg-gray-900 p-3 rounded">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="font-semibold">{{ $review->user->name }}</div>
+                  <div class="text-sm text-gray-400">{{ $review->created_at->diffForHumans() }}</div>
                 </div>
-                <p class="text-gray-700 mt-2">{{ $review->body }}</p>
+                <div class="text-yellow-400">
+                  @for($i=1;$i<=5;$i++)
+                    <span class="{{ $i <= $review->rating ? 'text-yellow-400' : 'text-gray-700' }}">★</span>
+                  @endfor
+                </div>
+              </div>
+              <p class="mt-2 text-gray-300">{{ $review->body }}</p>
+              <div class="mt-2 text-xs text-gray-500">{{ ucfirst($review->status) }}</div>
             </div>
-        @empty
-            <p class="text-gray-500">No reviews yet. Be the first one to review!</p>
-        @endforelse
+          @empty
+            <p class="text-gray-400">No reviews yet.</p>
+          @endforelse
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 @include('footer')

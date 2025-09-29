@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -29,7 +29,7 @@ class AuthController extends Controller
             'password' => bcrypt($request->password),
         ]);
 
-        return redirect()->route('login')->with('success','User Created successfully!');
+        return response()->json(['message' => 'User created successfully!'], 201);
     }
 
     // Login user and return JWT token
@@ -37,15 +37,11 @@ class AuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        if (!$token = auth('api')->attempt($credentials)) {
+        if (!$token = JWTAuth::attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        return response()->json([
-        'access_token' => $token,
-        'token_type'   => 'bearer',
-        'expires_in'   => config('jwt.ttl') * 60,
-    ]);
+        return $this->respondWithToken($token);
     }
 
     // Get user profile
@@ -57,17 +53,16 @@ class AuthController extends Controller
     // Logout user (invalidate token)
     public function logout()
     {
-        auth('api')->logout();
+        JWTAuth::invalidate(JWTAuth::getToken());
 
         return response()->json(['message' => 'Successfully logged out']);
     }
 
     // Refresh JWT token
-    // public function refresh()
-    // {
-    //     $newToken = JWTAuth::parseToken()->refresh();
-    //     return $this->respondWithToken($newToken);
-    // }
+    public function refresh()
+    {
+        return $this->respondWithToken(JWTAuth::refresh());
+    }
 
     // Return token response structure
     protected function respondWithToken($token)

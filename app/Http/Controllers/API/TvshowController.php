@@ -5,9 +5,21 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Tvshow;
 use Illuminate\Http\Request;
+use Cloudinary\Configuration\Configuration;
+use Cloudinary\Api\Upload\UploadApi;
 
 class TvshowController extends Controller
 {
+        protected $uploadApi;
+
+    public function __construct()
+    {
+        // Configure Cloudinary
+        Configuration::instance(env('CLOUDINARY_URL'));
+
+        // Instantiate UploadApi
+        $this->uploadApi = new UploadApi();
+    }
     public function index()
     {
         $tvshows = Tvshow::all();
@@ -31,9 +43,17 @@ class TvshowController extends Controller
             'trailer_url' => 'nullable|string|max:255',
         ]);
 
-        if ($request->hasFile('poster')) {
-        $validated['poster'] = $request->file('poster')->store('posters', 'public');
-      }
+        $uploadedFile = $request->file('poster');
+        $uploadResult = $this->uploadApi->upload($uploadedFile->getRealPath(), [
+                'folder' => 'profiles',
+                'resource_type' => 'image',
+                'transformation' => [
+                    ['width' => 300, 'height' => 300, 'crop' => 'fill'],
+                ],
+            ]);
+
+        $validated['poster'] = $uploadResult['secure_url'];
+
 
 
         $tvshow = Tvshow::create($validated);

@@ -1,47 +1,22 @@
 
-
-<footer class="bg-black text-gray-300 mt-12">
-    <div class="container mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-4 gap-8">
-        
-        <!-- Brand -->
+  </main>
+  <footer class="bg-gray-900 border-t border-gray-800 mt-12">
+    <div class="container mx-auto px-6 py-8 text-gray-400">
+      <div class="flex flex-col md:flex-row md:justify-between gap-6">
         <div>
-            <h2 class="text-white text-xl font-bold mb-4">FreshFlix</h2>
-            <p class="text-sm">Your trusted source for movies, TV shows, ratings & reviews.</p>
+          <h4 class="text-white font-semibold mb-2">FreshFlix</h4>
+          <p class="max-w-md">A lightweight Rotten Tomatoes clone — curated reviews and audience scores.</p>
         </div>
+        <div class="flex gap-6">
+          <a href="#" class="hover:text-white">About</a>
+          <a href="#" class="hover:text-white">Contact</a>
+          <a href="#" class="hover:text-white">Privacy</a>
+        </div>
+      </div>
 
-        <!-- Navigation -->
-        <div>
-            <h3 class="text-white font-semibold mb-3">Explore</h3>
-            <ul class="space-y-2 text-sm">
-                <li><a href="/movies" class="hover:text-white">Movies</a></li>
-                <li><a href="/tvshows" class="hover:text-white">TV Shows</a></li>
-                <li><a href="/top-rated" class="hover:text-white">Top Rated </a></li>
-            </ul>
-        </div>
-
-        <!-- Legal -->
-        <div>
-            <h3 class="text-white font-semibold mb-3">Legal</h3>
-            <ul class="space-y-2 text-sm">
-                <li><a href="/privacy" class="hover:text-white">Privacy Policy</a></li>
-                <li><a href="/terms" class="hover:text-white">Terms of Service</a></li>
-            </ul>
-        </div>
-
-        <!-- Social -->
-        <div>
-            <h3 class="text-white font-semibold mb-3">Connect</h3>
-            <div class="flex space-x-4">
-                <a href="#" class="hover:text-white"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="hover:text-white"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="hover:text-white"><i class="fab fa-instagram"></i></a>
-                <a href="#" class="hover:text-white"><i class="fab fa-youtube"></i></a>
-            </div>
-        </div>
+      <div class="mt-6 text-sm text-gray-500">© {{ date('Y') }} FreshFlix. Built with ❤️.</div>
     </div>
-
-    <!-- Bottom -->
-    <div class="bg-gray-900 text-center text-gray-500 text-sm py-4">
-        © 2025 FreshFlix. All Rights Reserved.
-    </div>
-</footer>
+  </footer>
+  <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
+</body>
+</html>
